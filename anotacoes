@@ -142,8 +142,16 @@ slaves:
      <domain-controller>
        <remote protocol="remote" host="192.168.0.101" port="9999" username="admadm" security-realm="SlaveRealm">
      </domain-controller>
-  5. tellnet no ip do master e na porta 9990
 
+     no caso de dar problema de timeout por tentar acessar a porta 9999:
+
+     <domain-controller>
+       <remote protocol="http-remoting" host="192.168.0.101" port="9990" username="admadm" security-realm="SlaveRealm">
+     </domain-controller>
+
+  5. > tellnet 198.162.15.7 9990
+     tellnet no ip do master e na porta 9990
+     
 
 
 	
