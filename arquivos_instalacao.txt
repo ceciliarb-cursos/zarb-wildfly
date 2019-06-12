@@ -1,0 +1,14 @@
+total 1770020
+drwxr-xr-x 3 home home      4096 jun 12 09:21 .
+drwxrwxr-x 6 home home      4096 jun 12 09:20 ..
+-rw-r--r-- 1 home home   9136463 jun 10 06:45 apache-maven-3.6.1-bin.tar.gz
+-rw-r--r-- 1 home home         0 jun 12 09:21 arquivos_instalacao.txt
+-rw-r--r-- 1 home home  48723682 jun  7 13:45 code_1.34.0-1557957934_amd64.deb
+-rw-r--r-- 1 home home 784111884 jun 10 22:16 devstudio-12.11.0.GA-installer-standalone.jar
+-rw-r--r-- 1 home home 351457868 jun  7 13:45 eclipse-jee-2019-03-R-linux-gtk-x86_64.tar.gz
+-rw-r--r-- 1 home home  61851351 jun 10 22:02 forge-distribution-3.9.2.Final-offline.zip
+-rw-r--r-- 1 home home 139253234 jun 10 06:47 java_ee_sdk-8u1.zip
+-rw-r--r-- 1 home home 162211936 jun 10 06:47 jdk-12.0.1_linux-x64_bin.deb
+-rw-r--r-- 1 home home  73876194 jun  7 13:45 skypeforlinux-64.deb
+drwxr-xr-x 2 home home      4096 jun  9 17:48 Telegram Desktop
+-rw-r--r-- 1 home home 181814060 jun  7 13:45 wildfly-16.0.0.Final.zip

@@ -1,0 +1,149 @@
+---------------------------------------------------------------------
+                             Wildfly
+---------------------------------------------------------------------
+10/06/2019
+Java
+.....................................................................
+Java EE e Servidores de Aplicacao
+(versao atual = Java EE 8.0)
+ - JBoss AS
+   . opensource
+ - JBoss EAP
+   . pago
+ - Wildfly
+   . free
+   . opensource
+   . mais leve, agil
+   . melhor performance
+   . trabalha com micro containers
+   . utilizado pelo Banco do Brasil
+
+Windows Subsystem for Linux
+Usando Linux no Windows 10
+https://docs.microsoft.com/en-us/windows/wsl/install-win10
+
+Ferramentas essenciais:
+ - wildfly
+ - maven
+
+
+Criacao de usuarios
+> sudo groupadd wildfly
+> sudo useradd -r -g wildfly -d /opt/wildfly -s /sbin/nologin wildfly
+
+Decompactando o wildfly
+> tar -xzvf wildfly-16.0.0.Final.tar.gz	 --directory /opt 
+> cd /opt
+
+Fazendo um link simbolico
+> ln -s wildfly-16.0.0.Final wildfly
+> chown -R wildfly. /opt/wildfly-16.0.0.Final/
+> cd /opt/wildfly-16.0.0.Final/
+
+Executando o wildfly
+> su -s "/bin/bash" -c "bin/standalone.sh" wildfly
+  acessar http://localhost:8080
+
+Criando user no management:
+- configuracao gerada no arquivo mgmt-users.properties 
+- wildfly vem com um BD integrado
+
+* /sbin/nologin  => nao permite acesso aa linha de comando para esse usuario
+* sudo -i        => ir para o root
+* chown -R wildfly. /opt/wildfly16/
+  wildfly. == wildfly:wildfly
+
+Wildfly diretorios:
+- appclient  == aplicacoes "desempacotadas"
+- bin        == executaveis
+- domain     == cluster de wildfly (+-)
+                distribuido, alta disponibilidade
+- modules    == bibliotecas, driver jdbc (diferente do padrao web do Tomcat)
+- standalone == configuracao, dados temporarios da maquina de desenvolvimento
+  standalone/deployments == onde colocar os WARs
+
+
+
+---------------------------------------------------------------------
+11/06/2019
+.....................................................................
+no ~/.profile:
+
+export JAVA_HOME=/usr/lib/jvm/jdk1.8.0_211
+export FORGE_HOME=/opt/forge-distribution-3.9.2.Final
+export PATH=$PATH:$FORGE_HOME/bin
+export MAVEN_HOME=/opt/apache-maven-3.6.1/
+export PATH=$PATH:$MAVEN_HOME/bin
+export WILDFLY_HOME=/opt/wildfly
+
+maven archetype web 7
+
+> forge
+>> project-new --type war
+http://forge.jboss.org/document/write-a-java-ee-web-application---basic
+>> project-new --named conference
+>> jpa-new-entity --named Mapa
+>> jpa-new-field --named nome
+>> jpa-new-field --named latitude
+>> jpa-new-field --named longitude
+>> jpa-new-field --named descricao
+
+> cp meuTeste.war /opt/wildfly/standalone/deployments/
+	
+
+---------------------------------------------------------------------
+12/06/2019
+.....................................................................
+Modos de funcionamento do Wildfly
+- Standalone
+- Domain
+  . cada servidor tem seu IP
+- Cluster
+
+> sudo ./domain.sh -b 0.0.0.0 -bmanagement 0.0.0.0
+  - starta o wildfly como dominio
+  - starta 2 servidores por default (2 hosts e 1 host controller = 1 domain host controller)
+
+ ===================================================================================
+||                                Modo domain                                      ||
+||                                                                                 || 
+||  ----------------------------------        ----------------------------------   ||
+|| |                   ------------   |      |                   ------------   |  ||
+|| |  -------------   | servidor 1 |  |      |  -------------   | servidor 1 |  |  ||
+|| | | controlador |   ------------   |      | | controlador |   ------------   |  ||
+|| | | host 1      |   ------------   |      | | host 2      |   ------------   |  ||
+|| |  ----|--------   | servidor 2 |  |      |  ----|--------   | servidor 2 |  |  ||
+|| |      |            ------------   |      |      |            ------------   |  ||
+||  ------|---------------------------        ------|---------------------------   ||
+||        |                                         |                              ||
+||________|_________________________________________|______________________________||
+||                      Host controlador de Dominio                                ||     
+ ===================================================================================  
+
+domain/configuration/domain.xml
+
+masters:
+  1. executar /bin/add-user.sh
+     o usuario eh adicionado em domain/configuration/mgmt-users.properties
+  2. ao final da execucao, aparece a seguinte linha:
+     >> To represent the user add the following to the server-identities definition <secret value="cmFpejEyMw==" />
+  3. salvar essa senha cmFpejEyMw== para os slaves usarem depois
+
+slaves:
+  1. abrir arquivo host_slave.xml
+  2. salvar como host.xml
+  3. inserir
+     <security-realm name="SlaveRealm">
+       <server-identities>
+         <secret value="cmFpejEyMw==" />
+       </server-identities>
+     </security-realm>
+  4. inserir 
+     <domain-controller>
+       <remote protocol="remote" host="192.168.0.101" port="9999" username="admadm" security-realm="SlaveRealm">
+     </domain-controller>
+  5. tellnet no ip do master e na porta 9990
+
+
+
+	
